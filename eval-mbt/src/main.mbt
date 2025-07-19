@@ -194,7 +194,48 @@ impl Show for Tm with output(self, logger) {
   }
 }
 
+fn consume(x : Tm) -> Unit {
+  let s = match x {
+    Lam(_) => "lam"
+    Var(_) => "var"
+    App(_) => "app"
+  }
+  println(s)
+}
+
 ///|
 fn main {
+  let times = 100_000_000
+  let five = Lam(
+    "f",
+    Lam(
+      "x",
+      App(
+        Var("f"),
+        App(Var("f"), App(Var("f"), App(Var("f"), App(Var("f"), Var("x"))))),
+      ),
+    ),
+  )
+  let add = Lam(
+    "m",
+    Lam(
+      "n",
+      Lam(
+        "f",
+        Lam(
+          "x",
+          App(App(Var("m"), Var("f")), App(App(Var("n"), Var("f")), Var("x"))),
+        ),
+      ),
+    ),
+  )
+  let add5 = App(add,five)
+  let mut tm = five 
 
+  for _ in 0..< times {
+    tm = App(add5,five)
+  }
+
+  let result = nf(tm,Nil)
+  consume(result)
 }
