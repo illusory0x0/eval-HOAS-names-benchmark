@@ -1,7 +1,8 @@
 #![allow(dead_code)]
+#![allow(non_snake_case)]
+#![allow(unused_imports)]
 
 use std::fmt::Debug;
-use std::fmt::write;
 use std::rc::Rc;
 
 type Name = Rc<String>;
@@ -79,10 +80,7 @@ fn vApp(t: ValRef, u: ValRef) -> ValRef {
 fn eval(tm: TmRef, env: Env) -> ValRef {
     match &*tm {
         Var(x) => env.lookup(x).unwrap(),
-        App(t, u) => vApp(
-            eval(t.clone(), env.clone()),
-            eval(u.clone(), env.clone()),
-        ),
+        App(t, u) => vApp(eval(t.clone(), env.clone()), eval(u.clone(), env.clone())),
         Lam(x, t) => {
             let x_ = x.clone();
             let t_ = t.clone();
@@ -154,61 +152,6 @@ impl Debug for Tm {
 
 #[test]
 fn test_example() {
-  let nil: Env = Rc::new(Nil);
-
-  let five = lam(
-      "f",
-      lam(
-          "x",
-          app(
-              var("f"),
-              app(
-                  var("f"),
-                  app(var("f"), app(var("f"), app(var("f"), var("x")))),
-              ),
-          ),
-      ),
-  );
-  let add = lam(
-      "m",
-      lam(
-          "n",
-          lam(
-              "f",
-              lam(
-                  "x",
-                  app(
-                      app(var("m"), var("f")),
-                      app(app(var("n"), var("f")), var("x")),
-                  ),
-              ),
-          ),
-      ),
-  );
-
-  let ten = app(app(add, five.clone()), five.clone());
-  let ten = nf(ten.clone(), nil.clone());
-
-  let ten_actual = format!("{ten:?}");
-  let ten_expected = expect!["(fun f -> (fun x -> (f (f (f (f (f (f (f (f (f (f x))))))))))))))"];
-  ten_expected.assert_eq(&ten_actual);
-
-
-  let mult = lam(
-    "m",
-    lam("n", lam("f", app(var("m"), app(var("n"), var("f"))))),
-  );
-
-  let num_25 = app(app(mult, five.clone()), five.clone());
-  let num_25 = nf(num_25.clone(), nil.clone());
-
-  let num_25_actual = format!("{num_25:?}");
-  let num_25_expected = expect!["(fun f -> (fun x -> (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f x)))))))))))))))))))))))))))))"];
-  num_25_expected.assert_eq(&num_25_actual);
-
-}
-
-fn main() {
     let nil: Env = Rc::new(Nil);
 
     let five = lam(
@@ -244,6 +187,75 @@ fn main() {
     let ten = app(app(add, five.clone()), five.clone());
     let ten = nf(ten.clone(), nil.clone());
 
-    println!("{:?}", ten);
+    let ten_actual = format!("{ten:?}");
+    let ten_expected = expect!["(fun f -> (fun x -> (f (f (f (f (f (f (f (f (f (f x))))))))))))))"];
+    ten_expected.assert_eq(&ten_actual);
 
+    let mult = lam(
+        "m",
+        lam("n", lam("f", app(var("m"), app(var("n"), var("f"))))),
+    );
+
+    let num_25 = app(app(mult, five.clone()), five.clone());
+    let num_25 = nf(num_25.clone(), nil.clone());
+
+    let num_25_actual = format!("{num_25:?}");
+    let num_25_expected = expect![
+        "(fun f -> (fun x -> (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f x)))))))))))))))))))))))))))))"
+    ];
+    num_25_expected.assert_eq(&num_25_actual);
+}
+
+fn consume(x: TmRef) {
+    let s = match *x {
+        Lam(..) => "lam",
+        Var(..) => "var",
+        App(..) => "app",
+    };
+    println!("{s}");
+}
+
+fn main() {
+    let times = 100_000_000;
+    let nil: Env = Rc::new(Nil);
+
+    let five = lam(
+        "f",
+        lam(
+            "x",
+            app(
+                var("f"),
+                app(
+                    var("f"),
+                    app(var("f"), app(var("f"), app(var("f"), var("x")))),
+                ),
+            ),
+        ),
+    );
+    let add = lam(
+        "m",
+        lam(
+            "n",
+            lam(
+                "f",
+                lam(
+                    "x",
+                    app(
+                        app(var("m"), var("f")),
+                        app(app(var("n"), var("f")), var("x")),
+                    ),
+                ),
+            ),
+        ),
+    );
+
+    let add5 = app(add, five.clone());
+    let mut tm = five.clone();
+
+    for _ in 0..times {
+        tm = app(add5.clone(), five.clone());
+    }
+
+    let result = nf(tm, nil.clone());
+    consume(result);
 }
