@@ -1,5 +1,6 @@
 package org.example;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.example.Pair;
@@ -37,31 +38,37 @@ class Eval {
     record VLam(@NotNull String name, @NotNull Function<Val, Val> closure) implements Val {
     }
 
-    static Tm Var(@NotNull String name) {
+    @Contract("_ -> new")
+    static @NotNull Tm Var(@NotNull String name) {
         return new Var(name);
     }
 
-    static Tm Lam(@NotNull String name, @NotNull Tm body) {
+    @Contract("_, _ -> new")
+    static @NotNull Tm Lam(@NotNull String name, @NotNull Tm body) {
         return new Lam(name, body);
     }
 
-    static Tm App(@NotNull Tm fun, @NotNull Tm arg) {
+    @Contract("_, _ -> new")
+    static @NotNull Tm App(@NotNull Tm fun, @NotNull Tm arg) {
         return new App(fun, arg);
     }
 
-    static Val VVar(@NotNull String name) {
+    @Contract("_ -> new")
+    static @NotNull Val VVar(@NotNull String name) {
         return new VVar(name);
     }
 
-    static Val VApp(@NotNull Val fun, @NotNull Val arg) {
+    @Contract("_, _ -> new")
+    static @NotNull Val VApp(@NotNull Val fun, @NotNull Val arg) {
         return new VApp(fun, arg);
     }
 
-    static Val VLam(@NotNull String name, @NotNull Function<Val, Val> closure) {
+    @Contract("_, _ -> new")
+    static @NotNull Val VLam(@NotNull String name, @NotNull Function<Val, Val> closure) {
         return new VLam(name, closure);
     }
 
-    static String fresh(@NotNull List<String> ns, @NotNull String x) {
+    static @NotNull String fresh(@NotNull List<String> ns, @NotNull String x) {
         if (x.equals("_")) {
             return "_";
         } else {
@@ -134,11 +141,11 @@ class Eval {
         }
     }
 
-    static Tm nf(@NotNull Tm tm, @NotNull List<Pair<String, Val>> env) {
+    static @NotNull Tm nf(@NotNull Tm tm, @NotNull List<Pair<String, Val>> env) {
         return quote(eval(tm, env), List.map(env, Pair::fst));
     }
 
-    static String toString(@NotNull Tm tm) {
+    static @NotNull String toString(@NotNull Tm tm) {
         var sb = new StringBuilder();
         output(tm, sb);
         return sb.toString();
