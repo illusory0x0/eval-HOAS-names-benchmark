@@ -231,10 +231,12 @@ fn main {
     ),
   )
   let add5 = App(add, five)
-  let mut tm = five
-  for _ in 0..<times {
-    tm = App(add5, tm)
+  for _ in 0..<1000 {
+    let mut tm = five
+    for _ in 0..<times {
+      tm = App(add5, tm)
+    }
+    let result = nf(tm, Nil)
+    consume(result)
   }
-  let result = nf(tm, Nil)
-  consume(result)
 }

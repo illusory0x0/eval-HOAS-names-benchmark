@@ -162,12 +162,14 @@ public class Main {
     public static void main(@NotNull String[] args) {
         var add5 = App(add, five);
         var times = 1024;
-        var tm = five;
 
-        for (int i = 0; i < times; i++) {
-            tm = App(add5, tm);
+        for (int j = 0; j < 1000; j++) {
+            var tm = five;
+            for (int i = 0; i < times; i++) {
+                tm = App(add5, tm);
+            }
+            var result = nf(tm, List.nil());
+            consume(result);
         }
-        var result = nf(tm, List.nil());
-        consume(result);
     }
 }

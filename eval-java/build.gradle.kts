@@ -8,7 +8,7 @@ application {
 }
 
 tasks.withType<JavaExec> {
-    jvmArgs = listOf("-Xss16m")
+    jvmArgs = listOf("-Xss8m")
 }
 
 group = "org.example"

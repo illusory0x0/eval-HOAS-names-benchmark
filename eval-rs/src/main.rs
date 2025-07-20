@@ -250,12 +250,15 @@ fn main() {
     );
 
     let add5 = app(add, five.clone());
-    let mut tm = five.clone();
 
-    for _ in 0..times {
-        tm = app(add5.clone(), tm.clone());
+    for _ in 0..1000 {
+        let mut tm = five.clone();
+
+        for _ in 0..times {
+            tm = app(add5.clone(), tm.clone());
+        }
+
+        let result = nf(tm, nil.clone());
+        consume(result);
     }
-
-    let result = nf(tm, nil.clone());
-    consume(result);
 }
