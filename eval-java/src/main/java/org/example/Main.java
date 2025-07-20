@@ -161,7 +161,7 @@ public class Main {
 
     public static void main(@NotNull String[] args) {
         var add5 = App(add, five);
-        var times = 8192;
+        var times = 1024;
         var tm = five;
 
         for (int i = 0; i < times; i++) {

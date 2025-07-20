@@ -216,7 +216,7 @@ fn consume(x: TmRef) {
 }
 
 fn main() {
-    let times = 100_000_000;
+    let times = 1024;
     let nil: Env = Rc::new(Nil);
 
     let five = lam(
@@ -253,7 +253,7 @@ fn main() {
     let mut tm = five.clone();
 
     for _ in 0..times {
-        tm = app(add5.clone(), five.clone());
+        tm = app(add5.clone(), tm.clone());
     }
 
     let result = nf(tm, nil.clone());
