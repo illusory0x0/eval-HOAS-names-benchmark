@@ -1,0 +1,1 @@
+Checks: 'readability-*,-misc-unused-alias-decls,-readability-identifier-length,-readability-magic-numbers,-readability-else-after-return'
