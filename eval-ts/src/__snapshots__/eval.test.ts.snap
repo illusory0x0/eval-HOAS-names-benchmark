@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`eval 1`] = `"(fun f -> (fun x -> (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f (f x)))))))))))))))))))))))))))"`;
+
+exports[`tm_to_string 1`] = `"(fun f -> (fun x -> (f (f (f (f (f x)))))))"`;
+
+exports[`tm_to_string 2`] = `"(fun m -> (fun n -> (fun f -> (fun x -> ((m f) ((n f) x))))))"`;
+
+exports[`tm_to_string 3`] = `"(fun m -> (fun n -> (fun f -> (m (n f)))))"`;
