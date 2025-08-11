@@ -236,6 +236,8 @@ fn main {
     for _ in 0..<times {
       tm = App(add5, tm)
     }
+    // Stack overflow in MoonBit JavaScript backend
+    // Requires v8 JIT optimization to avoid stack overflow.
     let result = nf(tm, Nil)
     consume(result)
   }
